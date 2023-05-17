@@ -6,20 +6,43 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "BROWSER=0 remotion preview src/index.ts",
+    "render": "remotion render src/index.ts hello-world",
+    "update-deployments": "npm run delete-deployments && npm run deploy",
+    "deploy": "ts-node ./utils/lambda/deploy.ts -P ./tsconfig.json",
+    "delete-deployments": "ts-node ./utils/lambda/delete.ts -P ./tsconfig.json",
+    "lambda:site": "remotion lambda sites create remotion/index.ts --site-name=main-site",
+    "lambda:function": "remotion lambda functions deploy"
   },
   "dependencies": {
+    "@remotion/cli": "^3.3.92",
+    "@remotion/lambda": "^3.3.92",
+    "@remotion/player": "^3.3.92",
+    "@t3-oss/env-nextjs": "^0.3.1",
     "@types/node": "20.1.4",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
-    "autoprefixer": "10.4.14",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
     "next": "13.4.2",
-    "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "remotion": "^3.3.92",
+    "typescript": "5.0.4",
+    "zod": "^3.21.4",
+    "zod-to-json-schema": "^3.21.1"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "^3.3.92",
+    "autoprefixer": "10.4.14",
+    "css-loader": "^6.7.3",
+    "dotenv": "^16.0.3",
+    "postcss": "8.4.23",
+    "postcss-loader": "^7.3.0",
+    "postcss-preset-env": "^8.3.2",
+    "style-loader": "^3.3.2",
     "tailwindcss": "3.3.2",
-    "typescript": "5.0.4"
+    "ts-node": "^10.9.1"
   }
 }
