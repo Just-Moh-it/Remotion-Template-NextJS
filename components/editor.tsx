@@ -6,8 +6,6 @@ import { playerSizes, remotionConfig } from "@/config/remotion";
 import { comps } from "@/remotion/Root";
 import { helloWorldConfig } from "@/remotion/HelloWorld";
 import PropEditor from "./prop-editor";
-import { JsonSchema7ObjectType } from "zod-to-json-schema/src/parsers/object";
-import zodToJsonSchema from "zod-to-json-schema";
 import { useRender } from "@/hooks/useRender";
 import { InputProps } from "@/types/remotion";
 
@@ -34,21 +32,9 @@ export default function Editor() {
   const handleCompChange = useCallback((newCompId: string) => {
     setCurrentCompId(newCompId);
 
-    const newComp = comps.get(newCompId) ?? helloWorldConfig;
-
-    const properties = (
-      zodToJsonSchema(newComp.schema) as JsonSchema7ObjectType
-    )?.properties;
-
-    console.log(
-      "🚀 ~ file: editor.tsx:44 ~ handleCompChange ~ properties:",
-      properties,
-      Object.entries(properties)[0],
-    );
-
-    Object.entries(properties).forEach(([key, propConfig]) =>
-      setInputProps((prev) => ({ ...prev, [key]: propConfig.default }))
-    );
+    const newComp = comps.get(newCompId);
+    if (!newComp) return;
+    setInputProps(newComp.defaultProps);
   }, []);
 
   return (

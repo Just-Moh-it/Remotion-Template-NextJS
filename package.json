@@ -28,8 +28,7 @@
     "react-dom": "18.2.0",
     "remotion": "^4.0.17",
     "typescript": "5.1.6",
-    "zod": "^3.21.4",
-    "zod-to-json-schema": "^3.21.1"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@remotion/bundler": "^4.0.17",
