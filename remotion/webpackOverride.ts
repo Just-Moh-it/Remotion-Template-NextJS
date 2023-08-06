@@ -8,7 +8,7 @@ export const webpackOverride: WebpackOverrideFn = (currentConfiguration) => {
       ...currentConfiguration.resolve,
       alias: {
         ...(currentConfiguration.resolve?.alias ?? {}),
-        lib: process.cwd(),
+        "@": process.cwd(),
       },
     },
   });
