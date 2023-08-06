@@ -9,6 +9,9 @@ on:
 jobs:
   redeploy:
     runs-on: ubuntu-latest
+    env:
+      REMOTION_AWS_ACCESS_KEY_ID: ${{ secrets.REMOTION_AWS_ACCESS_KEY_ID }}
+      REMOTION_AWS_SECRET_ACCESS_KEY: ${{ secrets.REMOTION_AWS_SECRET_ACCESS_KEY }}
     environment: production
     strategy:
       matrix:
