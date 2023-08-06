@@ -1,5 +1,8 @@
 import { remotionConfig } from "@/config/remotion";
-import { CompConfig, inputPropsSchema } from "@/types/remotion";
+import {
+  createCompConfig,
+  inputPropsSchema,
+} from "@/types/remotion";
 import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { z } from "zod";
 
@@ -7,8 +10,8 @@ const id = "hello-world";
 const durationInFrames = remotionConfig.fps * 10;
 
 const schema = z.object({
-  name: z.string().default("World"),
-  showFrameCount: z.boolean().default(true),
+  name: z.string(),
+  showFrameCount: z.boolean(),
 });
 
 type HelloWorldProps = z.infer<typeof inputPropsSchema>;
@@ -25,9 +28,10 @@ function HelloWorldComp({ name, showFrameCount }: HelloWorldProps) {
   );
 }
 
-export const helloWorldConfig = {
+export const helloWorldConfig = createCompConfig({
   id,
   durationInFrames,
   schema,
   component: HelloWorldComp as React.FC,
-} satisfies CompConfig;
+  defaultProps: { showFrameCount: true, name: "World!" },
+});
