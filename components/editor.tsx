@@ -9,6 +9,7 @@ import PropEditor from "./prop-editor";
 import { JsonSchema7ObjectType } from "zod-to-json-schema/src/parsers/object";
 import zodToJsonSchema from "zod-to-json-schema";
 import { useRender } from "@/hooks/useRender";
+import { InputProps } from "@/types/remotion";
 
 export default function Editor() {
   const [playerSizeName, setPlayerSizeName] = useState<string>("16:9");
@@ -16,7 +17,7 @@ export default function Editor() {
   const currentComp = useMemo(() => {
     return comps.get(currentCompId) ?? helloWorldConfig;
   }, [currentCompId]);
-  const [inputProps, setInputProps] = useState<Record<string, unknown>>(
+  const [inputProps, setInputProps] = useState<InputProps>(
     currentComp.defaultProps,
   );
   const { start: startRender, status: renderStatus, progressPercent } =

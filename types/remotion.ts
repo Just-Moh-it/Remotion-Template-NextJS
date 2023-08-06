@@ -1,13 +1,6 @@
 import { z } from "zod";
 
-export const inputPropsSchema = z.intersection(
-  z.object({
-    width: z.number(),
-    height: z.number(),
-  }),
-  z.record(z.string(), z.any()),
-);
-export type InputProps = z.infer<typeof inputPropsSchema>;
+export type InputProps = Record<string, unknown>;
 
 export interface CompConfig<T extends z.ZodObject<any, any>> {
   id: string;
@@ -16,7 +9,9 @@ export interface CompConfig<T extends z.ZodObject<any, any>> {
   component: React.FC;
   defaultProps: z.infer<T>;
 }
-export const createCompConfig = <T extends z.ZodObject<any, any>>(config: CompConfig<T>) => config;
+export const createCompConfig = <T extends z.ZodObject<any, any>>(
+  config: CompConfig<T>,
+) => config;
 
 export type DisplayableRenderProgressOrFinality =
   | {

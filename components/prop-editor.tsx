@@ -1,4 +1,4 @@
-import { CompConfig } from "@/types/remotion";
+import { CompConfig, InputProps } from "@/types/remotion";
 import { Dispatch, Fragment, SetStateAction, useMemo } from "react";
 import { ZodObject } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
@@ -9,8 +9,8 @@ export default function PropEditor({
   schema,
   setInputProps,
 }: {
-  inputProps: Record<string, unknown>;
-  setInputProps: Dispatch<SetStateAction<Record<string, unknown>>>;
+  inputProps: InputProps;
+  setInputProps: Dispatch<SetStateAction<InputProps>>;
   schema: CompConfig<ZodObject<any, any>>["schema"];
 }) {
   const inputPropsJson = zodToJsonSchema(schema);
