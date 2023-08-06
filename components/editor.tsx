@@ -9,7 +9,6 @@ import PropEditor from "./prop-editor";
 import { CompConfig } from "@/types/remotion";
 import { JsonSchema7ObjectType } from "zod-to-json-schema/src/parsers/object";
 import zodToJsonSchema from "zod-to-json-schema";
-import { flushSync } from "react-dom";
 import { useRender } from "@/hooks/useRender";
 
 export default function Editor() {
@@ -19,44 +18,44 @@ export default function Editor() {
     Object.entries(
       (
         zodToJsonSchema(
-          (helloWorldConfig as CompConfig<{}>).inputPropsSchema
+          (helloWorldConfig as CompConfig<{}>).inputPropsSchema,
         ) as JsonSchema7ObjectType
-      ).properties
+      ).properties,
     ).reduce((acc, [key, config]) => {
       return { ...acc, [key]: config.default };
-    }, {})
+    }, {}),
   );
   const { start: startRender, status: renderStatus } = useRender();
-
+  //
   const currentComp = useMemo(() => {
     return comps.get(currentCompId) ?? helloWorldConfig;
   }, [currentCompId]);
   const playerSize = useMemo(() => {
     return playerSizes.get(playerSizeName) ?? { width: 1920, height: 1080 };
   }, [playerSizeName]);
-
+  //
   const handleCompChange = useCallback((newCompId: string) => {
     setCurrentCompId(newCompId);
-
+    //
     const newComp = comps.get(newCompId) ?? helloWorldConfig;
-
+    //
     const properties = (
       zodToJsonSchema(newComp.inputPropsSchema) as JsonSchema7ObjectType
     )?.properties;
-
-    // setInputProps({});
-
+    //
+    setInputProps({});
+    //
     console.log(
       "🚀 ~ file: editor.tsx:44 ~ handleCompChange ~ properties:",
       properties,
-      Object.entries(properties)[0]
+      Object.entries(properties)[0],
     );
-
+    //
     Object.entries(properties).forEach(([key, propConfig]) =>
       setInputProps((prev) => ({ ...prev, [key]: propConfig.default }))
     );
   }, []);
-
+  //
   return (
     <div className="flex flex-col gap-2 items-stretch w-full">
       Editor comes here!
