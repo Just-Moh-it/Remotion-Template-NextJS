@@ -6,7 +6,6 @@ import { playerSizes, remotionConfig } from "@/config/remotion";
 import { comps } from "@/remotion/Root";
 import { helloWorldConfig } from "@/remotion/HelloWorld";
 import PropEditor from "./prop-editor";
-import { CompConfig } from "@/types/remotion";
 import { JsonSchema7ObjectType } from "zod-to-json-schema/src/parsers/object";
 import zodToJsonSchema from "zod-to-json-schema";
 import { useRender } from "@/hooks/useRender";
@@ -18,44 +17,49 @@ export default function Editor() {
     Object.entries(
       (
         zodToJsonSchema(
-          (helloWorldConfig as CompConfig<{}>).inputPropsSchema,
+          (helloWorldConfig).schema,
         ) as JsonSchema7ObjectType
       ).properties,
     ).reduce((acc, [key, config]) => {
       return { ...acc, [key]: config.default };
     }, {}),
   );
-  const { start: startRender, status: renderStatus } = useRender();
-  //
+  const { start: startRender, status: renderStatus, progressPercent } =
+    useRender({
+      onSuccess: (url) => {
+        (window as any).open(url);
+      },
+    });
+
   const currentComp = useMemo(() => {
     return comps.get(currentCompId) ?? helloWorldConfig;
   }, [currentCompId]);
   const playerSize = useMemo(() => {
     return playerSizes.get(playerSizeName) ?? { width: 1920, height: 1080 };
   }, [playerSizeName]);
-  //
+
   const handleCompChange = useCallback((newCompId: string) => {
     setCurrentCompId(newCompId);
-    //
+
     const newComp = comps.get(newCompId) ?? helloWorldConfig;
-    //
+
     const properties = (
-      zodToJsonSchema(newComp.inputPropsSchema) as JsonSchema7ObjectType
+      zodToJsonSchema(newComp.schema) as JsonSchema7ObjectType
     )?.properties;
-    //
+
     setInputProps({});
-    //
+
     console.log(
       "🚀 ~ file: editor.tsx:44 ~ handleCompChange ~ properties:",
       properties,
       Object.entries(properties)[0],
     );
-    //
+
     Object.entries(properties).forEach(([key, propConfig]) =>
       setInputProps((prev) => ({ ...prev, [key]: propConfig.default }))
     );
   }, []);
-  //
+
   return (
     <div className="flex flex-col gap-2 items-stretch w-full">
       Editor comes here!
@@ -82,7 +86,7 @@ export default function Editor() {
       <PropEditor
         inputProps={inputProps}
         setInputProps={setInputProps}
-        schema={currentComp.inputPropsSchema}
+        schema={currentComp.schema}
       />
       <div className="flex w-full h-full grow">
         <Player
@@ -99,9 +103,18 @@ export default function Editor() {
       </div>
       <button
         disabled={renderStatus !== "ready"}
-        onClick={() => startRender({ inputProps, compId: currentCompId })}
+        onClick={() =>
+          startRender({
+            inputProps: {
+              ...inputProps,
+              width: playerSize.width,
+              height: playerSize.height,
+            },
+            compId: currentCompId,
+          })}
       >
-        Render: {renderStatus}
+        Render: {renderStatus} {progressPercent &&
+          `${progressPercent}%`}
       </button>
     </div>
   );

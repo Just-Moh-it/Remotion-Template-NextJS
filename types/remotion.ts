@@ -1,8 +1,19 @@
-export interface CompConfig<T> {
+import { z } from "zod";
+
+export const inputPropsSchema = z.intersection(
+  z.object({
+    width: z.number(),
+    height: z.number(),
+  }),
+  z.record(z.string(), z.any()),
+);
+export type InputProps = z.infer<typeof inputPropsSchema>;
+
+export interface CompConfig {
   id: string;
   durationInFrames: number;
-  inputPropsSchema: z.ZodType<T>;
-  component: HelloWorldComp;
+  schema: z.ZodObject<any, any>;
+  component: React.FC;
 }
 
 export type DisplayableRenderProgressOrFinality =

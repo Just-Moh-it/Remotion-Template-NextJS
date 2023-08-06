@@ -1,6 +1,6 @@
 "use server";
 import { remotionConfig } from "@/config/remotion";
-import { DisplayableRenderProgressOrFinality } from "@/types/remotion";
+import { DisplayableRenderProgressOrFinality, InputProps } from "@/types/remotion";
 import { sample } from "@/utils/sample";
 import {
   AwsRegion,
@@ -14,7 +14,7 @@ export const createRender = async ({
   inputProps,
 }: {
   compId: string;
-  inputProps?: Record<string, unknown>;
+  inputProps: InputProps;
 }) => {
   // 👇🏼 Change this to get the closest region based on the user's region for optimal UX.
   const region = sample(remotionConfig.regions);
