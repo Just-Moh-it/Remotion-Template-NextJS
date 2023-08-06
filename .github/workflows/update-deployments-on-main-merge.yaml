@@ -32,6 +32,6 @@ jobs:
             args: [--frozen-lockfile, --strict-peer-dependencies]
           - args: [--global, gulp, prettier, typescript]
     - name: Install dependencies
-      run: pnpm ci
+      run: pnpm i
     - name: Run Lambda Sites script
       run: pnpm run lambda:sites
