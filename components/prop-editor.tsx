@@ -1,56 +1,76 @@
-import { CompConfig, InputProps } from "@/types/remotion";
-import { Dispatch, Fragment, SetStateAction, useMemo } from "react";
-import { ZodObject } from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
-import { JsonSchema7ObjectType } from "zod-to-json-schema/src/parsers/object";
+import { InputProps } from "@/types/remotion";
+import React, { Dispatch, SetStateAction } from "react";
+import { z, ZodObject } from "zod";
 
-export default function PropEditor({
-  inputProps,
-  schema,
-  setInputProps,
-}: {
-  inputProps: InputProps;
+const PropEditor = ({ schema, setInputProps, inputProps }: {
+  schema: ZodObject<any, any>;
   setInputProps: Dispatch<SetStateAction<InputProps>>;
-  schema: CompConfig<ZodObject<any, any>>["schema"];
-}) {
-  const inputPropsJson = zodToJsonSchema(schema);
-
-  const properties = useMemo(
-    () => (inputPropsJson as JsonSchema7ObjectType).properties ?? {},
-    [inputPropsJson],
-  );
+  inputProps: InputProps;
+}) => {
+  const shape = schema._def.shape();
+  const keys = Object.keys(shape);
 
   return (
     <>
-      {Object.entries(properties).map(([key, config]) => {
+      {keys.map((key) => {
+        const getControl = () => {
+          switch (shape[key].constructor) {
+            case z.ZodString:
+              return (
+                <input
+                  id={key}
+                  key={key}
+                  type="text"
+                  name={key}
+                  value={inputProps[key] as string}
+                  onChange={({ target: { value } }) =>
+                    setInputProps((state) => ({ ...state, [key]: value }))}
+                />
+              );
+            case z.ZodNumber:
+              return (
+                <input
+                  id={key}
+                  key={key}
+                  type="number"
+                  name={key}
+                  value={inputProps[key] as string}
+                  onChange={({ target: { value } }) =>
+                    setInputProps((state) => ({
+                      ...state,
+                      [key]: parseInt(value),
+                    }))}
+                />
+              );
+            case z.ZodBoolean:
+              return (
+                <input
+                  id={key}
+                  type="checkbox"
+                  key={key}
+                  name={key}
+                  checked={inputProps[key] as boolean}
+                  onChange={({ target: { checked } }) =>
+                    setInputProps((state) => ({
+                      ...state,
+                      [key]: checked,
+                    }))}
+                />
+              );
+            default:
+              return null;
+          }
+        };
+
         return (
-          <Fragment key={key}>
+          <div className="flex flex-col items-stretch" key={key}>
             <label htmlFor={key}>{key}</label>
-            {"type" in config &&
-              (config.type === "string"
-                ? (
-                  <input
-                    type="text"
-                    value={inputProps[key] as string}
-                    onChange={({ target: { value } }) =>
-                      setInputProps((prev) => ({ ...prev, [key]: value }))}
-                    id={key}
-                  />
-                )
-                : config.type === "boolean"
-                ? (
-                  <input
-                    type="checkbox"
-                    checked={(inputProps[key] as boolean) ?? false}
-                    onChange={({ target: { checked } }) =>
-                      setInputProps((prev) => ({ ...prev, [key]: checked }))}
-                    id={key}
-                  />
-                )
-                : <p>Input prop type not supported</p>)}
-          </Fragment>
+            {getControl()}
+          </div>
         );
       })}
     </>
   );
-}
+};
+
+export default PropEditor;
