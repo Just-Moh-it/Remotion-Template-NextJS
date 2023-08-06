@@ -13,16 +13,11 @@ import { useRender } from "@/hooks/useRender";
 export default function Editor() {
   const [playerSizeName, setPlayerSizeName] = useState<string>("16:9");
   const [currentCompId, setCurrentCompId] = useState<string>("hello-world");
+  const currentComp = useMemo(() => {
+    return comps.get(currentCompId) ?? helloWorldConfig;
+  }, [currentCompId]);
   const [inputProps, setInputProps] = useState<Record<string, unknown>>(
-    Object.entries(
-      (
-        zodToJsonSchema(
-          (helloWorldConfig).schema,
-        ) as JsonSchema7ObjectType
-      ).properties,
-    ).reduce((acc, [key, config]) => {
-      return { ...acc, [key]: config.default };
-    }, {}),
+    currentComp.defaultProps,
   );
   const { start: startRender, status: renderStatus, progressPercent } =
     useRender({
@@ -31,9 +26,6 @@ export default function Editor() {
       },
     });
 
-  const currentComp = useMemo(() => {
-    return comps.get(currentCompId) ?? helloWorldConfig;
-  }, [currentCompId]);
   const playerSize = useMemo(() => {
     return playerSizes.get(playerSizeName) ?? { width: 1920, height: 1080 };
   }, [playerSizeName]);
@@ -46,8 +38,6 @@ export default function Editor() {
     const properties = (
       zodToJsonSchema(newComp.schema) as JsonSchema7ObjectType
     )?.properties;
-
-    setInputProps({});
 
     console.log(
       "🚀 ~ file: editor.tsx:44 ~ handleCompChange ~ properties:",

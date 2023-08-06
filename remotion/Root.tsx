@@ -2,10 +2,11 @@ import { helloWorldConfig } from "./HelloWorld";
 import { Composition, getInputProps } from "remotion";
 import { remotionConfig } from "@/config/remotion";
 import { CompConfig, inputPropsSchema } from "@/types/remotion";
+import { z } from "zod";
 
 export const comps = new Map([
   [helloWorldConfig.id, helloWorldConfig],
-]) satisfies Map<string, CompConfig>;
+]) satisfies Map<string, CompConfig<z.ZodObject<any, any>>>;
 
 const inputProps = typeof window === "undefined"
   ? inputPropsSchema.parse(getInputProps())
@@ -18,6 +19,8 @@ export default function Root() {
         <Composition
           key={comp.id}
           id={comp.id}
+          schema={comp.schema}
+          defaultProps={comp.defaultProps}
           component={comp.component as React.FC}
           durationInFrames={comp.durationInFrames}
           fps={remotionConfig.fps}
