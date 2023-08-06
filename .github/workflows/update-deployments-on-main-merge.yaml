@@ -34,4 +34,4 @@ jobs:
     - name: Install dependencies
       run: pnpm i
     - name: Run Lambda Sites script
-      run: pnpm run lambda:sites
+      run: pnpm run lambda:site
