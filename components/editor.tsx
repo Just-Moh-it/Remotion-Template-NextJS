@@ -16,7 +16,7 @@ export default function Editor() {
   const currentComp = useMemo(() => {
     return comps.get(currentCompId) ?? helloWorldConfig;
   }, [currentCompId]);
-  const [inputProps, setInputProps] = useState(
+  const [inputProps, setInputProps] = useState<Record<string, unknown>>(
     currentComp.defaultProps,
   );
   const { start: startRender, status: renderStatus, progressPercent } =
