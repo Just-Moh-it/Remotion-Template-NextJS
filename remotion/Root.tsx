@@ -1,7 +1,7 @@
 import { helloWorldConfig } from "./HelloWorld";
 import { Composition, getInputProps } from "remotion";
 import { remotionConfig } from "@/config/remotion";
-import { CompConfig, inputPropsSchema } from "@/types/remotion";
+import { CompConfig } from "@/types/remotion";
 import { z } from "zod";
 
 export const comps = new Map([
@@ -9,7 +9,10 @@ export const comps = new Map([
 ]) satisfies Map<string, CompConfig<z.ZodObject<any, any>>>;
 
 const inputProps = typeof window === "undefined"
-  ? inputPropsSchema.parse(getInputProps())
+  ? z.object({
+    width: z.number(),
+    height: z.number(),
+  }).nonstrict().parse(getInputProps())
   : null;
 
 export default function Root() {
