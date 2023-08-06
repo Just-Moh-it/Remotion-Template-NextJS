@@ -2,12 +2,13 @@ import type { AwsRegion } from "@remotion/lambda/client";
 
 export const remotionConfig = {
   fps: 30,
-  height: 1080,
-  width: 1920,
+  fallbackHeight: 1080,
+  fallbackWidth: 1920,
   regions: ["us-east-1"] satisfies AwsRegion[],
   siteId: "main-site",
   memorySizeInMb: 1024 * 2,
   timeoutInSeconds: 60 * 5,
+  progressPollingMinWaitTimeInMs: 5 * 1000,
 };
 
 export const playerSizes = new Map([

@@ -2,23 +2,26 @@
 
 import { useState } from "react";
 import { createRender, getProgress } from "@/app/(editor)/editor/_actions";
-import { DisplayableRenderProgressOrFinality } from "@/types/remotion";
+import {
+  InputProps,
+} from "@/types/remotion";
+import { remotionConfig } from "@/config/remotion";
 
 export type RenderStatus = "ready" | "provisioning" | "progress";
 
-export const useRender = () => {
+export const useRender = ({
+  onSuccess,
+}: {
+  onSuccess?: (url: string) => void;
+}) => {
   const [status, setStatus] = useState<RenderStatus>("ready");
-  const [renderProgressOrFinality, setRenderProgressOrFinality] =
-    useState<DisplayableRenderProgressOrFinality>({
-      type: "progress",
-      percent: 0,
-    });
+  const [progressPercent, setProgressPercent] = useState<number | null>(null);
 
   const start = async ({
     compId,
     inputProps,
   }: {
-    inputProps: Record<string, unknown>;
+    inputProps: InputProps;
     compId: string;
   }) => {
     setStatus("provisioning");
@@ -27,29 +30,42 @@ export const useRender = () => {
       const render = await createRender({ compId, inputProps });
 
       setStatus("progress");
+      setProgressPercent(0);
 
-      let progress: DisplayableRenderProgressOrFinality = {
-        type: "progress",
-        percent: 0,
+      const pollProgress = async (req: Parameters<typeof getProgress>[0]) => {
+        const res = await getProgress(req);
+
+        switch (res.type) {
+          case "progress":
+            setTimeout(
+              () => pollProgress(req),
+              remotionConfig.progressPollingMinWaitTimeInMs,
+            );
+            setProgressPercent(res.percent);
+            break;
+
+          case "success":
+            console.log("Success", res);
+            onSuccess?.(res.url);
+            setProgressPercent(null);
+            setStatus("ready");
+
+          case "error":
+            console.error(
+              "⚠️ Error occurred while rendering. Please check server logs for more info",
+            );
+            setProgressPercent(null);
+            setStatus("ready");
+        }
       };
 
-      while (progress.type === "progress") {
-        progress = await getProgress(render);
-
-        setRenderProgressOrFinality(progress);
-      }
-      setStatus("ready");
-
-      if (progress.type === "error") {
-        console.error(
-          "⚠️ Error occurred while rendering. Please check server logs for more info"
-        );
-      }
+      pollProgress(render);
     } catch (err) {
       setStatus("ready");
+      setProgressPercent(null);
       console.error("⚠️ Error occurred while starting render:", err);
     }
   };
 
-  return { start, status };
+  return { start, status, progressPercent };
 };
