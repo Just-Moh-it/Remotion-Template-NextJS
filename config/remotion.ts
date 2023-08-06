@@ -1,4 +1,3 @@
-import { LambdaArchitecture } from "@remotion/lambda";
 import type { AwsRegion } from "@remotion/lambda/client";
 
 export const remotionConfig = {
@@ -7,7 +6,6 @@ export const remotionConfig = {
   width: 1920,
   regions: ["us-east-1"] satisfies AwsRegion[],
   siteId: "main-site",
-  architecture: "arm64" satisfies LambdaArchitecture,
   memorySizeInMb: 1024 * 2,
   timeoutInSeconds: 60 * 5,
 };

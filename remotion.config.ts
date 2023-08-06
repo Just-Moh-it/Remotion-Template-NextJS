@@ -1,4 +1,4 @@
-import { Config } from "remotion";
-import { webpackOverride } from "./remotion/webpackOverride";
+import { Config } from "@remotion/cli/config";
+import { webpackOverride } from "@/remotion/webpackOverride";
 
 Config.overrideWebpackConfig(webpackOverride);
