@@ -63,7 +63,7 @@ const PropEditor = ({ schema, setInputProps, inputProps }: {
         };
 
         return (
-          <div className="flex flex-col items-stretch">
+          <div className="flex flex-col items-stretch" key={key}>
             <label htmlFor={key}>{key}</label>
             {getControl()}
           </div>
