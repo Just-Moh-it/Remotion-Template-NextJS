@@ -9,7 +9,7 @@
     "lint": "next lint",
     "preview": "BROWSER=0 remotion preview src/index.ts",
     "render": "remotion render src/index.ts hello-world",
-    "lambda:site": "remotion lambda sites create remotion/index.ts --site-name=main-site",
+    "lambda:site": "remotion lambda sites create ./remotion/index.ts",
     "lambda:function": "remotion lambda functions deploy"
   },
   "dependencies": {
