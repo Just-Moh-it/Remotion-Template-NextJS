@@ -9,9 +9,6 @@
     "lint": "next lint",
     "preview": "BROWSER=0 remotion preview src/index.ts",
     "render": "remotion render src/index.ts hello-world",
-    "update-deployments": "npm run delete-deployments && npm run deploy",
-    "deploy": "ts-node ./utils/lambda/deploy.ts -P ./tsconfig.json",
-    "delete-deployments": "ts-node ./utils/lambda/delete.ts -P ./tsconfig.json",
     "lambda:site": "remotion lambda sites create remotion/index.ts --site-name=main-site",
     "lambda:function": "remotion lambda functions deploy"
   },
